@@ -1,11 +1,10 @@
 package me.pauloo27.java;
 
-/**
- * Hello world!
- *
- */
+import me.pauloo27.java.view.scenes.WinRegister;
+
 public class App {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        var register = new WinRegister();
+        register.setVisible(true);
     }
 }
