@@ -1,7 +1,9 @@
 package me.pauloo27.java.services;
 
 import java.sql.SQLException;
+import java.util.Collection;
 
+import me.pauloo27.java.db.models.Product;
 import me.pauloo27.java.db.repos.ProductRepository;
 import me.pauloo27.java.utils.AppException;
 
@@ -21,5 +23,10 @@ public class ProductService {
 
         var repo = new ProductRepository();
         repo.create(name, price, amount);
+    }
+
+    public Collection<Product> findAll() throws SQLException {
+        var repo = new ProductRepository();
+        return repo.findAll();
     }
 }

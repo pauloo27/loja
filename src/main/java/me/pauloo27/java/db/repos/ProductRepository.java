@@ -2,8 +2,12 @@ package me.pauloo27.java.db.repos;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import me.pauloo27.java.db.DB;
+
+import me.pauloo27.java.db.models.Product;
 
 public class ProductRepository {
 
@@ -16,6 +20,26 @@ public class ProductRepository {
             preparedStatement.setDouble(2, price);
             preparedStatement.setInt(3, amount);
             preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
+    public Collection<Product> findAll() throws SQLException {
+        var connection = DB.getConnection();
+        var sql = "SELECT * FROM public.product";
+
+        try (var preparedStatement = connection.prepareStatement(sql)) {
+            var resultSet = preparedStatement.executeQuery();
+
+            var products = new ArrayList<Product>();
+
+            while (resultSet.next()) {
+                var product = new Product(resultSet.getInt("id"), resultSet.getString("name"),
+                        resultSet.getDouble("price"), resultSet.getInt("amount"));
+                products.add(product);
+            }
+            return products;
         } catch (SQLException e) {
             throw e;
         }

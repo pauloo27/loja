@@ -64,8 +64,8 @@ public class WinLogin extends WinBase {
                 this.userService.login(username, password);
                 JOptionPane.showMessageDialog(this, "Login efetuado com sucesso", "Sucesso",
                         JOptionPane.INFORMATION_MESSAGE);
-                var newProductWin = new WinNewProduct();
-                newProductWin.setVisible(true);
+                var productListWin = new WinListProduct();
+                productListWin.setVisible(true);
                 this.dispose();
             } catch (AppException e) {
                 JOptionPane.showMessageDialog(this,

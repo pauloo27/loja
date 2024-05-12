@@ -10,4 +10,9 @@ public class Schema {
         conn.createStatement().execute(
                 "CREATE TABLE IF NOT EXISTS public.product (id SERIAL PRIMARY KEY, name VARCHAR(255) NOT NULL, price DECIMAL(10, 2) NOT NULL, amount INT NOT NULL)");
     }
+
+    public static void truncateTables(Connection conn) throws SQLException {
+        conn.createStatement().execute("TRUNCATE TABLE public.user");
+        conn.createStatement().execute("TRUNCATE TABLE public.product");
+    }
 }

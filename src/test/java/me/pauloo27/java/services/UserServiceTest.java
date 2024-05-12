@@ -31,6 +31,7 @@ public class UserServiceTest {
     var conn = DriverManager.getConnection(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
     DB.setConnection(conn);
     Schema.createTables(conn);
+    Schema.truncateTables(conn);
     this.underTest = new UserService();
   }
 

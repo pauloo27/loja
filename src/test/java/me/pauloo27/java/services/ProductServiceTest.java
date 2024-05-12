@@ -1,5 +1,8 @@
 package me.pauloo27.java.services;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -31,6 +34,7 @@ public class ProductServiceTest {
     var conn = DriverManager.getConnection(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
     DB.setConnection(conn);
     Schema.createTables(conn);
+    Schema.truncateTables(conn);
     this.underTest = new ProductService();
   }
 
@@ -55,5 +59,31 @@ public class ProductServiceTest {
   @Test
   public void shouldCreateProduct() {
     assertDoesNotThrow(() -> this.underTest.create("Valid Product", 100.0, 10));
+  }
+
+  @Test
+  public void shouldReturnEmptyCollectionIfNoProducts() throws Exception {
+    var products = underTest.findAll();
+    assertTrue(products.isEmpty());
+  }
+
+  @Test
+  public void shouldFindAllProducts() throws Exception {
+    // Create some test products
+    this.underTest.create("Product 1", 10.00, 5);
+    this.underTest.create("Product 2", 20.00, 3);
+
+    var products = underTest.findAll();
+    assertNotNull(products);
+    assertFalse(products.isEmpty());
+    assertEquals(2, products.size());
+
+    assertEquals("Product 1", products.stream().findFirst().get().getName());
+    assertEquals(10.00, products.stream().findFirst().get().getPrice());
+    assertEquals(5, products.stream().findFirst().get().getAmount());
+
+    assertEquals("Product 2", products.stream().skip(1).findFirst().get().getName());
+    assertEquals(20.00, products.stream().skip(1).findFirst().get().getPrice());
+    assertEquals(3, products.stream().skip(1).findFirst().get().getAmount());
   }
 }
