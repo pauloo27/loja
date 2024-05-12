@@ -11,10 +11,10 @@ public class UserService {
         if (username.isEmpty() || password.isEmpty()) {
             throw new AppException("Erro", "Preencha todos os campos");
         }
-
         if (password.length() < 6) {
             throw new AppException("Erro", "A senha deve ter no mínimo 6 caracteres");
         }
+
         var repo = new UserRepository();
         try {
             repo.create(username, password);
