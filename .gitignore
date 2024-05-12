@@ -41,3 +41,8 @@ manifest.mf
 # trash
 *.hidden
 
+# docker
+data/
+
+# settings
+db.properties
