@@ -1,5 +1,6 @@
 package me.pauloo27.java.services;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -47,12 +48,12 @@ public class UserServiceTest {
 
   @Test
   public void shouldRegisterUser() {
-    this.underTest.register("test", "123456");
+    assertDoesNotThrow(() -> this.underTest.register("test", "123456"));
   }
 
   @Test
   public void shouldNotAllowDuplicateUsernames() {
-    this.underTest.register("admin", "123456");
+    assertDoesNotThrow(() -> this.underTest.register("admin", "123456"));
     var thrown = assertThrows(AppException.class, () -> this.underTest.register("admin", "123456"));
 
     assertEquals("Nome de usuário já em uso", thrown.getMessage());
@@ -66,7 +67,7 @@ public class UserServiceTest {
 
   @Test
   public void shouldNotAllowInvalidCredentials() {
-    this.underTest.register("johndoe0", "123456");
+    assertDoesNotThrow(() -> this.underTest.register("johndoe0", "123456"));
     var thrown = assertThrows(AppException.class, () -> this.underTest.login("johndoe", "1234567"));
 
     assertEquals("Usuário ou senha inválidos", thrown.getMessage());
@@ -81,7 +82,7 @@ public class UserServiceTest {
 
   @Test
   public void shouldLogin() {
-    this.underTest.register("johndoe1", "123456");
-    this.underTest.login("johndoe1", "123456");
+    assertDoesNotThrow(() -> this.underTest.register("johndoe1", "123456"));
+    assertDoesNotThrow(() -> this.underTest.login("johndoe1", "123456"));
   }
 }
