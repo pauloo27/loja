@@ -17,13 +17,31 @@ public class UserService {
         }
         var repo = new UserRepository();
         try {
-            repo.register(username, password);
+            repo.create(username, password);
         } catch (SQLException | NoSuchAlgorithmException e) {
             if (e.getMessage().contains("duplicate key value violates unique constraint")) {
                 throw new AppException("Erro", "Nome de usuário já em uso");
             }
             e.printStackTrace();
             throw new AppException("Erro", "Algo deu errado ao criar usuário");
+        }
+    }
+
+    public void login(String username, String password) {
+        if (username.isEmpty() || password.isEmpty()) {
+            throw new AppException("Erro", "Preencha todos os campos");
+        }
+
+        var repo = new UserRepository();
+
+        try {
+            var user = repo.findByUsernameAndPassword(username, password);
+            if (user == null) {
+                throw new AppException("Erro", "Usuário ou senha inválidos");
+            }
+        } catch (SQLException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            throw new AppException("Erro", "Algo deu errado ao logar");
         }
     }
 }

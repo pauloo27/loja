@@ -57,4 +57,31 @@ public class UserServiceTest {
 
     assertEquals("Nome de usuário já em uso", thrown.getMessage());
   }
+
+  @Test
+  public void shouldNotAllowEmptyValuesOnLogin() {
+    var thrown = assertThrows(AppException.class, () -> this.underTest.login("", ""));
+    assertEquals("Preencha todos os campos", thrown.getMessage());
+  }
+
+  @Test
+  public void shouldNotAllowInvalidCredentials() {
+    this.underTest.register("johndoe0", "123456");
+    var thrown = assertThrows(AppException.class, () -> this.underTest.login("johndoe", "1234567"));
+
+    assertEquals("Usuário ou senha inválidos", thrown.getMessage());
+  }
+
+  @Test
+  public void shouldNotAllowInvalidUsername() {
+    var thrown = assertThrows(AppException.class, () -> this.underTest.login("notregistered", "123456"));
+
+    assertEquals("Usuário ou senha inválidos", thrown.getMessage());
+  }
+
+  @Test
+  public void shouldLogin() {
+    this.underTest.register("johndoe1", "123456");
+    this.underTest.login("johndoe1", "123456");
+  }
 }

@@ -6,11 +6,11 @@ import me.pauloo27.java.services.UserService;
 import me.pauloo27.java.utils.AppException;
 import me.pauloo27.java.view.WinBase;
 
-public class WinRegister extends WinBase {
+public class WinLogin extends WinBase {
     private UserService userService;
 
-    public WinRegister() {
-        super("Cadastrar Usuário", JFrame.DISPOSE_ON_CLOSE);
+    public WinLogin() {
+        super("Acessar Conta");
         this.userService = new UserService();
     }
 
@@ -29,18 +29,25 @@ public class WinRegister extends WinBase {
         var fieldPassword = new JPasswordField();
         super.addAt(fieldPassword, 10, 120, 200, 20);
 
-        var btnRegister = new JButton("Cadastrar");
-        super.addAt(btnRegister, 10, 150, 200, 20);
+        var btnLogin = new JButton("Login");
+        super.addAt(btnLogin, 10, 150, 200, 20);
 
-        btnRegister.addActionListener((a) -> {
+        var btnGoToRegister = new JButton("Registrar novo usuário");
+        super.addAt(btnGoToRegister, 10, 180, 200, 20);
+
+        btnGoToRegister.addActionListener((a) -> {
+            var register = new WinRegister();
+            register.setVisible(true);
+        });
+
+        btnLogin.addActionListener((a) -> {
             var username = fieldUsername.getText();
             var password = new String(fieldPassword.getPassword());
 
             try {
-                this.userService.register(username, password);
-                JOptionPane.showMessageDialog(this, "Usuário cadastrado com sucesso", "Sucesso",
+                this.userService.login(username, password);
+                JOptionPane.showMessageDialog(this, "Login efetuado com sucesso", "Sucesso",
                         JOptionPane.INFORMATION_MESSAGE);
-                this.dispose();
             } catch (AppException e) {
                 JOptionPane.showMessageDialog(this,
                         e.getMessage(),
