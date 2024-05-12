@@ -1,5 +1,10 @@
 package me.pauloo27.java.view.scenes;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import me.pauloo27.java.services.UserService;
@@ -16,6 +21,17 @@ public class WinLogin extends WinBase {
 
     public void setupComponents() {
         super.setupComponents();
+
+        Image img = null;
+        try {
+            var storePic = ImageIO.read(this.getClass().getResource("/store.png"));
+            img = storePic.getScaledInstance(200, 200, BufferedImage.SCALE_SMOOTH);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        JLabel imgStore = new JLabel(new ImageIcon(img));
+        super.addAt(imgStore, 300, 50, 200, 200);
 
         var lblName = new JLabel("Usuário:");
         super.addAt(lblName, 10, 50);
