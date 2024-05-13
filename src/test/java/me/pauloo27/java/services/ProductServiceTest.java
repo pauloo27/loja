@@ -86,4 +86,34 @@ public class ProductServiceTest {
     assertEquals(20.00, products.stream().skip(1).findFirst().get().getPrice());
     assertEquals(3, products.stream().skip(1).findFirst().get().getAmount());
   }
+
+  @Test
+  public void shouldSearchProducts() throws Exception {
+    // Create some test products
+    this.underTest.create("Product 1", 10.00, 5);
+    this.underTest.create("Product 2", 20.00, 3);
+
+    var products = underTest.search("Product 1");
+    assertNotNull(products);
+    assertFalse(products.isEmpty());
+    assertEquals(1, products.size());
+
+    assertEquals("Product 1", products.stream().findFirst().get().getName());
+    assertEquals(10.00, products.stream().findFirst().get().getPrice());
+    assertEquals(5, products.stream().findFirst().get().getAmount());
+
+    products = underTest.search("Product");
+
+    assertNotNull(products);
+    assertFalse(products.isEmpty());
+    assertEquals(2, products.size());
+
+    assertEquals("Product 1", products.stream().findFirst().get().getName());
+    assertEquals(10.00, products.stream().findFirst().get().getPrice());
+    assertEquals(5, products.stream().findFirst().get().getAmount());
+
+    assertEquals("Product 2", products.stream().skip(1).findFirst().get().getName());
+    assertEquals(20.00, products.stream().skip(1).findFirst().get().getPrice());
+    assertEquals(3, products.stream().skip(1).findFirst().get().getAmount());
+  }
 }

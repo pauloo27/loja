@@ -5,9 +5,11 @@ import java.util.Collection;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import me.pauloo27.java.db.models.Product;
@@ -20,6 +22,7 @@ import me.pauloo27.java.view.utils.TableButton;
 public class WinListProduct extends WinBase implements ProductCreationListener {
     private ProductService productService;
     private JTable table;
+    private JTextField fieldSearch;
 
     public WinListProduct() {
         super("Listar Produtos");
@@ -28,11 +31,39 @@ public class WinListProduct extends WinBase implements ProductCreationListener {
     }
 
     private void postSetupComponents() {
+        JButton btnNewProduct = new JButton("Novo Produto");
+        this.addAt(btnNewProduct, 10, 50, 200, 20);
+
+        btnNewProduct.addActionListener((a) -> {
+            WinNewProduct newProductWin = new WinNewProduct();
+            newProductWin.addProductCreationListener(this);
+            newProductWin.setVisible(true);
+        });
+
+        var lblSearch = new JLabel("Buscar:");
+        this.addAt(lblSearch, 10, 70);
+
+        this.fieldSearch = new JTextField();
+        this.addAt(this.fieldSearch, 10, 90, 200, 20);
+
+        var btnSearch = new JButton("Buscar");
+        this.addAt(btnSearch, 220, 90, 100, 20);
+
+        var btnClear = new JButton("Limpar");
+        this.addAt(btnClear, 330, 90, 100, 20);
+
+        btnSearch.addActionListener(this::handleSearch);
+        fieldSearch.addActionListener(this::handleSearch);
+        btnClear.addActionListener((a) -> {
+            this.fieldSearch.setText("");
+            this.refreshTableData();
+        });
+
         String[] columns = { "ID", "Nome", "Quantidade", "Preço", "Apagar" };
         table = new JTable(new DefaultTableModel(new Object[][] {}, columns));
         var scroll = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        this.addAt(scroll, 10, 50, 480, 180);
+        this.addAt(scroll, 10, 120, 600, 300);
 
         var action = new AbstractAction() {
             @Override
@@ -43,16 +74,11 @@ public class WinListProduct extends WinBase implements ProductCreationListener {
 
         new TableButton(table, action, 4);
 
-        JButton btnNewProduct = new JButton("Novo Produto");
-        this.addAt(btnNewProduct, 10, 10, 200, 30);
-
-        btnNewProduct.addActionListener((a) -> {
-            WinNewProduct newProductWin = new WinNewProduct();
-            newProductWin.addProductCreationListener(this);
-            newProductWin.setVisible(true);
-        });
-
         refreshTableData();
+    }
+
+    private void handleSearch(ActionEvent e) {
+        this.refreshTableData();
     }
 
     private void handleDelete(ActionEvent e) {
@@ -79,7 +105,10 @@ public class WinListProduct extends WinBase implements ProductCreationListener {
 
     private void refreshTableData() {
         try {
-            Collection<Product> products = productService.findAll();
+            Collection<Product> products = this.fieldSearch.getText() != ""
+                    ? this.productService.search(this.fieldSearch.getText())
+                    : this.productService.findAll();
+
             DefaultTableModel model = (DefaultTableModel) table.getModel();
             model.setRowCount(0);
             for (Product product : products) {

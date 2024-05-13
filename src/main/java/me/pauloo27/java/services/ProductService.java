@@ -37,6 +37,15 @@ public class ProductService {
         }
     }
 
+    public Collection<Product> search(String value) throws AppException {
+        var products = this.findAll();
+        if (value != null && !value.isEmpty()) {
+            var searchValue = value.toLowerCase();
+            return products.stream().filter(p -> p.getName().toLowerCase().contains(searchValue)).toList();
+        }
+        return products;
+    }
+
     public void deleteByID(int id) {
         var repo = new ProductRepository();
         try {
