@@ -16,4 +16,8 @@ public class User {
     public String getUsername() {
         return username;
     }
+
+    public static User fromResultSet(java.sql.ResultSet resultSet) throws java.sql.SQLException {
+        return new User(resultSet.getInt("id"), resultSet.getString("username"));
+    }
 }

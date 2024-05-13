@@ -11,6 +11,7 @@ import javax.swing.JTable;
 
 import me.pauloo27.java.db.models.Product;
 import me.pauloo27.java.services.ProductService;
+import me.pauloo27.java.utils.AppException;
 import me.pauloo27.java.view.WinBase;
 
 public class WinListProduct extends WinBase {
@@ -28,7 +29,7 @@ public class WinListProduct extends WinBase {
         Collection<Product> products = null;
         try {
             products = this.productService.findAll();
-        } catch (SQLException e) {
+        } catch (AppException e) {
             JOptionPane.showMessageDialog(this, "Erro ao buscar produtos", "Erro", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
@@ -40,8 +41,8 @@ public class WinListProduct extends WinBase {
         }
 
         String[][] dataArr = {};
-        JTable table = new JTable(data.toArray(dataArr), columns);
-        JScrollPane scroll = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+        var table = new JTable(data.toArray(dataArr), columns);
+        var scroll = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         table.setEnabled(false);

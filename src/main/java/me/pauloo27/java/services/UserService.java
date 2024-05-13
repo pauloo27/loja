@@ -18,7 +18,7 @@ public class UserService {
         var repo = new UserRepository();
         try {
             repo.create(username, password);
-        } catch (SQLException | NoSuchAlgorithmException e) {
+        } catch (Exception e) {
             if (e.getMessage().contains("duplicate key value violates unique constraint")) {
                 throw new AppException("Erro", "Nome de usuário já em uso");
             }
@@ -27,7 +27,7 @@ public class UserService {
         }
     }
 
-    public void login(String username, String password) {
+    public void login(String username, String password) throws AppException {
         if (username.isEmpty() || password.isEmpty()) {
             throw new AppException("Erro", "Preencha todos os campos");
         }
@@ -39,7 +39,9 @@ public class UserService {
             if (user == null) {
                 throw new AppException("Erro", "Usuário ou senha inválidos");
             }
-        } catch (SQLException | NoSuchAlgorithmException e) {
+        } catch (AppException e) {
+            throw e;
+        } catch (Exception e) {
             e.printStackTrace();
             throw new AppException("Erro", "Algo deu errado ao logar");
         }

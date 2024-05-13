@@ -44,7 +44,7 @@ public class UserRepository {
 
             var resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return new User(resultSet.getInt("id"), resultSet.getString("username"));
+                return User.fromResultSet(resultSet);
             }
             return null;
         } catch (SQLException e) {

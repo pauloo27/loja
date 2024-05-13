@@ -8,7 +8,7 @@ import me.pauloo27.java.db.repos.ProductRepository;
 import me.pauloo27.java.utils.AppException;
 
 public class ProductService {
-    public void create(String name, double price, int amount) throws SQLException {
+    public Product create(String name, double price, int amount) throws AppException {
         if (name.isBlank()) {
             throw new AppException("Erro", "Nome do produto não pode ser vazio");
         }
@@ -22,11 +22,19 @@ public class ProductService {
         }
 
         var repo = new ProductRepository();
-        repo.create(name, price, amount);
+        try {
+            return repo.create(name, price, amount);
+        } catch (Exception e) {
+            throw new AppException("Erro", "Algo deu errado ao criar produto");
+        }
     }
 
-    public Collection<Product> findAll() throws SQLException {
+    public Collection<Product> findAll() throws AppException {
         var repo = new ProductRepository();
-        return repo.findAll();
+        try {
+            return repo.findAll();
+        } catch (Exception e) {
+            throw new AppException("Erro", "Erro ao buscar produtos");
+        }
     }
 }

@@ -28,4 +28,9 @@ public class Product {
     public int getAmount() {
         return this.amount;
     }
+
+    public static Product fromResultSet(java.sql.ResultSet resultSet) throws java.sql.SQLException {
+        return new Product(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getDouble("price"),
+                resultSet.getInt("amount"));
+    }
 }

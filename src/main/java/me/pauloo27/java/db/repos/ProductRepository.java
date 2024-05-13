@@ -11,15 +11,20 @@ import me.pauloo27.java.db.models.Product;
 
 public class ProductRepository {
 
-    public void create(String name, double price, int amount) throws SQLException {
+    public Product create(String name, double price, int amount) throws SQLException {
         var connection = DB.getConnection();
-        var sql = "INSERT INTO public.product (name, price, amount) VALUES (?, ?, ?)";
+        var sql = "INSERT INTO public.product (name, price, amount) VALUES (?, ?, ?) RETURNING *";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, name);
             preparedStatement.setDouble(2, price);
             preparedStatement.setInt(3, amount);
-            preparedStatement.executeUpdate();
+            var resultSet = preparedStatement.executeQuery();
+
+            if (!resultSet.next()) {
+                throw new SQLException("Erro ao criar produto");
+            }
+            return Product.fromResultSet(resultSet);
         } catch (SQLException e) {
             throw e;
         }
@@ -35,8 +40,7 @@ public class ProductRepository {
             var products = new ArrayList<Product>();
 
             while (resultSet.next()) {
-                var product = new Product(resultSet.getInt("id"), resultSet.getString("name"),
-                        resultSet.getDouble("price"), resultSet.getInt("amount"));
+                var product = Product.fromResultSet(resultSet);
                 products.add(product);
             }
             return products;
