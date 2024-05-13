@@ -1,8 +1,5 @@
 package me.pauloo27.java.services;
 
-import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
-
 import me.pauloo27.java.db.repos.UserRepository;
 import me.pauloo27.java.utils.AppException;
 

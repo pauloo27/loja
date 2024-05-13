@@ -1,6 +1,5 @@
 package me.pauloo27.java.services;
 
-import java.sql.SQLException;
 import java.util.Collection;
 
 import me.pauloo27.java.db.models.Product;

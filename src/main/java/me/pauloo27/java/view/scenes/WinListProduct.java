@@ -1,7 +1,5 @@
 package me.pauloo27.java.view.scenes;
 
-import java.awt.BorderLayout;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.swing.JButton;
