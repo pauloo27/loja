@@ -48,4 +48,17 @@ public class ProductRepository {
             throw e;
         }
     }
+
+    public boolean deleteByID(int id) throws SQLException {
+        var connection = DB.getConnection();
+        var sql = "DELETE FROM public.product WHERE id = ?";
+
+        try (var preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, id);
+            return preparedStatement.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
 }

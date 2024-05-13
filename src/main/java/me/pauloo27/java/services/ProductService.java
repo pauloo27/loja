@@ -36,4 +36,13 @@ public class ProductService {
             throw new AppException("Erro", "Erro ao buscar produtos");
         }
     }
+
+    public void deleteByID(int id) {
+        var repo = new ProductRepository();
+        try {
+            repo.deleteByID(id);
+        } catch (Exception e) {
+            throw new AppException("Erro", "Erro ao apagar produto");
+        }
+    }
 }
