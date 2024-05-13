@@ -1,12 +1,32 @@
 package me.pauloo27.java.view.scenes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.*;
 
+import me.pauloo27.java.db.models.Product;
 import me.pauloo27.java.services.ProductService;
 import me.pauloo27.java.view.WinBase;
+import me.pauloo27.java.view.scenes.listeners.ProductCreationListener;
 
 public class WinNewProduct extends WinBase {
     private ProductService productService;
+    private List<ProductCreationListener> listeners = new ArrayList<>();
+
+    public void addProductCreationListener(ProductCreationListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeProductCreationListener(ProductCreationListener listener) {
+        listeners.remove(listener);
+    }
+
+    private void notifyProductCreated(Product product) {
+        for (ProductCreationListener listener : listeners) {
+            listener.onProductCreated(product);
+        }
+    }
 
     public WinNewProduct() {
         super("Novo Produto", JFrame.DISPOSE_ON_CLOSE);
@@ -46,13 +66,20 @@ public class WinNewProduct extends WinBase {
             var amount = (int) fieldAmount.getValue();
 
             try {
-                this.productService.create(name, price, amount);
+                var product = this.productService.create(name, price, amount);
                 JOptionPane.showMessageDialog(this, "Produto criado com sucesso", "Sucesso",
                         JOptionPane.INFORMATION_MESSAGE);
+                this.notifyProductCreated(product);
                 this.dispose();
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             }
         });
+    }
+
+    @Override
+    public void dispose() {
+        this.listeners.clear();
+        super.dispose();
     }
 }
