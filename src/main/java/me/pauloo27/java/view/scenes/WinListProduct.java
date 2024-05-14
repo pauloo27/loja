@@ -16,16 +16,16 @@ import me.pauloo27.java.db.models.Product;
 import me.pauloo27.java.services.ProductService;
 import me.pauloo27.java.utils.AppException;
 import me.pauloo27.java.view.WinBase;
-import me.pauloo27.java.view.scenes.listeners.ProductCreationListener;
+import me.pauloo27.java.view.scenes.listeners.ProductMutationListener;
 import me.pauloo27.java.view.utils.TableButton;
 
-public class WinListProduct extends WinBase implements ProductCreationListener {
+public class WinListProduct extends WinBase implements ProductMutationListener {
     private ProductService productService;
     private JTable table;
     private JTextField fieldSearch;
 
     public WinListProduct() {
-        super("Listar Produtos");
+        super("Listar Produtos", 800, 500);
         this.productService = new ProductService();
         this.postSetupComponents();
     }
@@ -36,7 +36,7 @@ public class WinListProduct extends WinBase implements ProductCreationListener {
 
         btnNewProduct.addActionListener((a) -> {
             WinNewProduct newProductWin = new WinNewProduct();
-            newProductWin.addProductCreationListener(this);
+            newProductWin.addProductMutationListener(this);
             newProductWin.setVisible(true);
         });
 
@@ -59,26 +59,50 @@ public class WinListProduct extends WinBase implements ProductCreationListener {
             this.refreshTableData();
         });
 
-        String[] columns = { "ID", "Nome", "Quantidade", "Preço", "Apagar" };
+        String[] columns = { "ID", "Nome", "Quantidade", "Preço", "Atualizar", "Apagar" };
         table = new JTable(new DefaultTableModel(new Object[][] {}, columns));
         var scroll = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         this.addAt(scroll, 10, 120, 600, 300);
 
-        var action = new AbstractAction() {
+        var deleteAction = new AbstractAction() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 handleDelete(e);
             }
         };
 
-        new TableButton(table, action, 4);
+        var updateAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleUpdate(e);
+            }
+        };
+
+        new TableButton(table, updateAction, 4);
+        new TableButton(table, deleteAction, 5);
 
         refreshTableData();
     }
 
     private void handleSearch(ActionEvent e) {
         this.refreshTableData();
+    }
+
+    private void handleUpdate(ActionEvent e) {
+        JTable table = (JTable) e.getSource();
+        int modelRow = Integer.valueOf(e.getActionCommand());
+
+        int id = (int) table.getModel().getValueAt(modelRow, 0);
+        String name = (String) table.getModel().getValueAt(modelRow, 1);
+        int amount = (int) table.getModel().getValueAt(modelRow, 2);
+        double price = (double) table.getModel().getValueAt(modelRow, 3);
+
+        var product = new Product(id, name, price, amount);
+
+        var editWin = new WinEditProduct(product);
+        editWin.setVisible(true);
+        editWin.addProductMutationListener(this);
     }
 
     private void handleDelete(ActionEvent e) {
@@ -113,7 +137,7 @@ public class WinListProduct extends WinBase implements ProductCreationListener {
             model.setRowCount(0);
             for (Product product : products) {
                 model.addRow(new Object[] { product.getId(), product.getName(), product.getAmount(), product.getPrice(),
-                        "Apagar" });
+                        "Atualizar", "Apagar" });
             }
         } catch (AppException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), e.getTitle(), JOptionPane.ERROR_MESSAGE);

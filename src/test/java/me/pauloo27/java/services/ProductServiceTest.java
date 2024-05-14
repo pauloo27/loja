@@ -116,4 +116,42 @@ public class ProductServiceTest {
     assertEquals(20.00, products.stream().skip(1).findFirst().get().getPrice());
     assertEquals(3, products.stream().skip(1).findFirst().get().getAmount());
   }
+
+  @Test
+  public void shouldUpdateProduct() throws Exception {
+    var product = this.underTest.create("Product 1", 10.00, 5);
+
+    var updatedProduct = this.underTest.update(product.getId(), "Product 1 Updated", 20.00, 0);
+    assertNotNull(updatedProduct);
+
+    assertEquals(product.getId(), updatedProduct.getId());
+    assertEquals("Product 1 Updated", updatedProduct.getName());
+    assertEquals(20.00, updatedProduct.getPrice());
+    assertEquals(0, updatedProduct.getAmount());
+
+    var products = this.underTest.findAll();
+
+    assertNotNull(products);
+    assertFalse(products.isEmpty());
+    assertEquals(1, products.size());
+
+    assertEquals("Product 1 Updated", products.stream().findFirst().get().getName());
+    assertEquals(20.00, products.stream().findFirst().get().getPrice());
+    assertEquals(0, products.stream().findFirst().get().getAmount());
+  }
+
+  @Test
+  public void shouldNotAllowInvalidDataForUpdate() {
+    var thrown = assertThrows(AppException.class, () -> this.underTest.update(0, "", 0, -1));
+    assertEquals("ID do produto não pode ser zero", thrown.getMessage());
+
+    thrown = assertThrows(AppException.class, () -> this.underTest.update(1, "", 0, -1));
+    assertEquals("Nome do produto não pode ser vazio", thrown.getMessage());
+
+    thrown = assertThrows(AppException.class, () -> this.underTest.update(1, "Product", 0, -1));
+    assertEquals("Preço do produto não pode ser menor ou igual a zero", thrown.getMessage());
+
+    thrown = assertThrows(AppException.class, () -> this.underTest.update(1, "Product", 10, -1));
+    assertEquals("Quantidade do produto não pode ser menor que zero", thrown.getMessage());
+  }
 }

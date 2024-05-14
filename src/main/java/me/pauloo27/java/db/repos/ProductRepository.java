@@ -30,6 +30,27 @@ public class ProductRepository {
         }
     }
 
+    public Product update(Product product) {
+        var connection = DB.getConnection();
+        var sql = "UPDATE public.product SET name = ?, price = ?, amount = ? WHERE id = ? RETURNING *";
+
+        try (var preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, product.getName());
+            preparedStatement.setDouble(2, product.getPrice());
+            preparedStatement.setInt(3, product.getAmount());
+            preparedStatement.setInt(4, product.getId());
+            var resultSet = preparedStatement.executeQuery();
+
+            if (!resultSet.next()) {
+                throw new SQLException("Erro ao atualizar produto");
+            }
+            return Product.fromResultSet(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public Collection<Product> findAll() throws SQLException {
         var connection = DB.getConnection();
         var sql = "SELECT * FROM public.product";

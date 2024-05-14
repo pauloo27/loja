@@ -20,6 +20,16 @@ public class WinBase extends JFrame {
         this.setupComponents();
     }
 
+    public WinBase(String title, int width, int height) {
+        super(title);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setResizable(false);
+        this.setSize(width, height);
+        this.setLocationRelativeTo(null);
+        this.setLayout(null);
+        this.setupComponents();
+    }
+
     public WinBase(String title, int closeOperation) {
         super(title);
         this.setDefaultCloseOperation(closeOperation);

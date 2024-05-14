@@ -28,6 +28,31 @@ public class ProductService {
         }
     }
 
+    public Product update(int id, String name, double price, int amount) throws AppException {
+        if (id == 0) {
+            throw new AppException("Erro", "ID do produto não pode ser zero");
+        }
+
+        if (name.isBlank()) {
+            throw new AppException("Erro", "Nome do produto não pode ser vazio");
+        }
+
+        if (price <= 0) {
+            throw new AppException("Erro", "Preço do produto não pode ser menor ou igual a zero");
+        }
+
+        if (amount < 0) {
+            throw new AppException("Erro", "Quantidade do produto não pode ser menor que zero");
+        }
+
+        var repo = new ProductRepository();
+        try {
+            return repo.update(new Product(id, name, price, amount));
+        } catch (Exception e) {
+            throw new AppException("Erro", "Algo deu errado ao criar produto");
+        }
+    }
+
     public Collection<Product> findAll() throws AppException {
         var repo = new ProductRepository();
         try {
