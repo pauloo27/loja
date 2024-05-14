@@ -53,7 +53,7 @@ public class ProductRepository {
 
     public Collection<Product> findAll() throws SQLException {
         var connection = DB.getConnection();
-        var sql = "SELECT * FROM public.product";
+        var sql = "SELECT * FROM public.product ORDER BY id ASC";
 
         try (var preparedStatement = connection.prepareStatement(sql)) {
             var resultSet = preparedStatement.executeQuery();
